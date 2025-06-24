@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# VSCode, PyCharm, e IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Streamlit cache
+.streamlit/
+# (exceto se quiser manter .streamlit/config.toml para tema/personalização)
+
+# Ambientes virtuais
+venv/
+.env/
+.venv/
+.env
+
+# Dados sensíveis
+*.env
+*.key
+*.pem
+
+# Jupyter (caso use)
+.ipynb_checkpoints/
+
+# Mac/Linux/Windows coisas inúteis
+.DS_Store
+Thumbs.db
+
+# Pipenv/Poetry
+Pipfile.lock
+poetry.lock
+
+# Arquivos de log
+*.log
+senha.txt

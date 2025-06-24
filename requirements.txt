@@ -1,0 +1,5 @@
+streamlit==1.42.2
+streamlit-option-menu
+pandas==2.2.1
+python-dotenv
+supabase==1.0.3
