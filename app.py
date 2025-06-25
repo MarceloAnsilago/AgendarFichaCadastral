@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
 import pandas as pd
 from db_supabase import gravar_no_banco, buscar_agendamentos, atualizar_agendamento, get_supabase_client
 from supabase import create_client, Client
