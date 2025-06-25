@@ -24,39 +24,76 @@ if "modal_idx" not in st.session_state:
 # Página fullscreen, sem menu lateral
 st.set_page_config(page_title="Painel de Agendamentos", layout="wide", initial_sidebar_state="collapsed")
 
-# CSS para remover footer e menu hambúrguer
-hide_streamlit_style = """
+# # CSS para remover footer e menu hambúrguer
+# hide_streamlit_style = """
+#     <style>
+#     #MainMenu {visibility: hidden;}
+#     footer {visibility: hidden;}
+#     header {visibility: hidden;}
+#     </style>
+# """
+# st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+# st.markdown(
+#     "<h1 style='text-align: center; color: #000; margin-bottom: 18px; margin-top: 10px;'>Agendamento de atualização cadastral</h1>",
+#     unsafe_allow_html=True
+# )
+# # Cria o menu de abas personalizado
+# selected = option_menu(
+#     menu_title=None,  # Oculta título do menu
+#     options=["Agendar", "Agendados", "Concluídos", "Dados"],
+#     icons=["calendar-plus", "calendar-check", "check-circle", "bar-chart"],  # Ícones (lucide ou bootstrap)
+#     orientation="horizontal",
+#     styles={
+#         "container": {"padding": "0!important", "background-color": "#f0f2f6"},
+#         "icon": {"color": "#4f8bf9", "font-size": "20px"}, 
+#         "nav-link": {
+#             "font-size": "18px",
+#             "font-weight": "bold",
+#             "text-align": "center",
+#             "margin": "0px",
+#             "--hover-color": "#e3e5ee",
+#         },
+#         "nav-link-selected": {"background-color": "#4f8bf9", "color": "white"},
+#     }
+# )
+# CSS para remover footer e menu hambúrguer + Tabs customizados
+st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    section[data-testid="stSidebar"] {display: none;}
+    /* Tabs style */
+    .stTabs [data-baseweb="tab"] {
+        font-size:18px;
+        font-weight:bold;
+        color:#4f8bf9;
+        padding: 6px 25px 6px 8px !important;
+        background: none !important;      /* Sem fundo */
+    }
+    .stTabs [aria-selected="true"] {
+        background: none !important;      /* Remove o fundo azul */
+        color: #4f8bf9 !important;        /* Mantém o azul do texto */
+        border-radius:8px 8px 0 0;
+        border-bottom: 3px solid #ff2e2e !important;  /* Sublinhado vermelho */
+    }
     </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
+""", unsafe_allow_html=True)
 st.markdown(
     "<h1 style='text-align: center; color: #000; margin-bottom: 18px; margin-top: 10px;'>Agendamento de atualização cadastral</h1>",
     unsafe_allow_html=True
 )
-# Cria o menu de abas personalizado
-selected = option_menu(
-    menu_title=None,  # Oculta título do menu
-    options=["Agendar", "Agendados", "Concluídos", "Dados"],
-    icons=["calendar-plus", "calendar-check", "check-circle", "bar-chart"],  # Ícones (lucide ou bootstrap)
-    orientation="horizontal",
-    styles={
-        "container": {"padding": "0!important", "background-color": "#f0f2f6"},
-        "icon": {"color": "#4f8bf9", "font-size": "20px"}, 
-        "nav-link": {
-            "font-size": "18px",
-            "font-weight": "bold",
-            "text-align": "center",
-            "margin": "0px",
-            "--hover-color": "#e3e5ee",
-        },
-        "nav-link-selected": {"background-color": "#4f8bf9", "color": "white"},
-    }
-)
+
+# Tabs com emojis simulando ícones
+abas = st.tabs([
+    "📅 Agendar",
+    "📋 Agendados",
+    "✅ Concluídos",
+    "📊 Dados"
+])
+
+
 # Função para preencher mensagem
 def preencher_mensagem(mensagem, row, contato=""):
     campos = {
@@ -72,16 +109,18 @@ def preencher_mensagem(mensagem, row, contato=""):
         mensagem = mensagem.replace("{" + chave + "}", str(valor))
     return mensagem
 
-if selected == "Agendar":
-    abas = st.tabs(["Agendar", "Mensagem WhatsApp"])
-    with abas[0]:
+# if selected == "Agendar":
+with abas[0]:
+    abasage = st.tabs(["Agendar", "Mensagem WhatsApp"])
+    with abasage[0]:
         st.markdown("## 📅 Agendar")
 
         opcao_carregar = st.radio(
             "Quantidade de registros a exibir:",
             options=["Carregar 30 registros", "Carregar tudo"],
             index=0,
-            horizontal=True
+            horizontal=True,
+            key="carregar_agendar"
         )
 
         col_filtros = st.columns(4)
@@ -294,7 +333,7 @@ if selected == "Agendar":
 
                 st.markdown("<hr style='margin: 5px 0 10px 0; border:0; border-top:1.5px solid #eaeaea;'>", unsafe_allow_html=True)
 
-    with abas[1]:
+    with abasage[1]:
       
         st.markdown("## 💬 Mensagem WhatsApp")
         st.text_area(
@@ -315,12 +354,11 @@ if selected == "Agendar":
             </small>
             """, unsafe_allow_html=True
         )
-        st.markdown("<hr style='margin: 5px 0 10px 0; border:0; border-top:1.5px solid #eaeaea;'>", unsafe_allow_html=True)
 
-elif selected == "Agendados":
-    abas = st.tabs(["Agendados", "Mensagem WhatsApp"])
+with abas[1]:
+    ab = st.tabs(["Agendados", "Mensagem WhatsApp"])
 
-    with abas[0]:
+    with ab[0]:
         st.markdown("## 📋 Agendados")
         st.info("Aqui serão listados apenas os agendamentos confirmados.")
 
@@ -329,7 +367,8 @@ elif selected == "Agendados":
             "Quantidade de registros a exibir:",
             options=["Carregar 30 registros", "Carregar tudo"],
             index=0,
-            horizontal=True
+            horizontal=True,
+            key="carregar_agendados"
         )
 
         with st.spinner("Carregando registros..."):
@@ -387,7 +426,8 @@ elif selected == "Agendados":
                     valor = row_display.get(col, "")
                     if col == "status":
                         cols[i].write(str(valor))
-                        abrir = cols[i].button("🔎 Ver agendamento", key=f"abrir_modal_{idx}")
+                        key_btn = f"abrir_modal_{row_id}_{idx}_{col}"  # <-- Chave única
+                        abrir = cols[i].button("🔎 Ver agendamento", key=key_btn)
                         if abrir:
                             st.session_state["modal_idx_agendados"] = idx
                     else:
@@ -495,7 +535,7 @@ elif selected == "Agendados":
                             valor = row.get(contato_col, "")
                             if pd.notna(valor) and str(valor).strip():
                                 numero = formata_numero(valor)
-                                mensagem_padrao = st.session_state.get("mensagem_padrao", "")
+                                mensagem_padrao = st.session_state.get("mensagem_padrao_agendar", "")
                                 msg_final = preencher_mensagem(mensagem_padrao, row, contato=valor)
                                 mensagem_wa = quote(msg_final)
                                 url_whatsapp = f"https://wa.me/{numero}?text={mensagem_wa}"
@@ -537,19 +577,19 @@ elif selected == "Agendados":
 
                 st.markdown("<hr style='margin: 5px 0 10px 0; border:0; border-top:1.5px solid #eaeaea;'>", unsafe_allow_html=True)
 
-    with abas[1]:
+    with ab[1]:
         st.markdown("## 💬 Mensagem WhatsApp")
         st.text_area(
             "Digite abaixo a mensagem que deseja enviar pelo WhatsApp:",
             value=(
-                "*Olá, tudo bem? 😃 Essa é uma mensagem da IDARON de São Miguel do Guaporé.*\n"
-                "Temos um agendamento marcado para o dia {data_agendamento} às {hora_agendamento} para o responsável pelo cadastro de {nome} na propriedade {propriedade}, para atualização da ficha cadastral do responsável por essa ficha.\n"
+                "Olá, tudo bem? Essa é uma mensagem da IDARON de São Miguel do Guaporé.\n\n"
+                "Temos um horário agendado para *{nome}* na propriedade *{propriedade}* "
+                "no município de *{municipio}*, no dia *{data_agendamento}* às *{hora_agendamento}*.\n\n"
                 "Podemos confirmar?"
             ),
-            height=120,
-            key="mensagem_padrao"
+                height=140,
+            key="mensagem_padrao_agendar"
         )
-
         st.markdown(
             """
             <small>Você pode usar as tags:<br>
@@ -561,7 +601,8 @@ elif selected == "Agendados":
 
 
 
-elif selected == "Concluídos":
+# elif selected == "Concluídos":
+with abas[2]:
     st.markdown("## ✅ Concluídos")
     st.info("Aqui aparecerão os agendamentos já finalizados.")
 
@@ -719,8 +760,8 @@ elif selected == "Concluídos":
 
 
 
-elif selected == "Dados":
-
+# elif selected == "Dados":
+with abas[3]:
     st.markdown("## 📊 Dados")
     st.info("Faça upload da planilha Excel (.xlsx) ou HTML (.html) para análise e gravação no banco de dados.")
 
