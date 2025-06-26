@@ -23,40 +23,7 @@ if "modal_idx" not in st.session_state:
 # Página fullscreen, sem menu lateral
 st.set_page_config(page_title="Painel de Agendamentos", layout="wide", initial_sidebar_state="collapsed")
 
-# # CSS para remover footer e menu hambúrguer
-# hide_streamlit_style = """
-#     <style>
-#     #MainMenu {visibility: hidden;}
-#     footer {visibility: hidden;}
-#     header {visibility: hidden;}
-#     </style>
-# """
-# st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# st.markdown(
-#     "<h1 style='text-align: center; color: #000; margin-bottom: 18px; margin-top: 10px;'>Agendamento de atualização cadastral</h1>",
-#     unsafe_allow_html=True
-# )
-# # Cria o menu de abas personalizado
-# selected = option_menu(
-#     menu_title=None,  # Oculta título do menu
-#     options=["Agendar", "Agendados", "Concluídos", "Dados"],
-#     icons=["calendar-plus", "calendar-check", "check-circle", "bar-chart"],  # Ícones (lucide ou bootstrap)
-#     orientation="horizontal",
-#     styles={
-#         "container": {"padding": "0!important", "background-color": "#f0f2f6"},
-#         "icon": {"color": "#4f8bf9", "font-size": "20px"}, 
-#         "nav-link": {
-#             "font-size": "18px",
-#             "font-weight": "bold",
-#             "text-align": "center",
-#             "margin": "0px",
-#             "--hover-color": "#e3e5ee",
-#         },
-#         "nav-link-selected": {"background-color": "#4f8bf9", "color": "white"},
-#     }
-# )
-# CSS para remover footer e menu hambúrguer + Tabs customizados
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -658,7 +625,10 @@ with abas[2]:
                 valor = row_display.get(col, "")
                 if col == "status":
                     cols[i].write(str(valor))
-                    abrir = cols[i].button("🔎 Verificar", key=f"abrir_modal_{idx}")
+                    abrir = cols[i].button(
+                        "🔎 Verificar", 
+                        key=f"abrir_modal_concluidos_{row_id}_{idx}_{col}"
+                    )
                     if abrir:
                         st.session_state["modal_idx_concluidos"] = idx
                 else:
